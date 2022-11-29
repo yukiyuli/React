@@ -6,7 +6,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import App from './09-immutable/redux/App'
+import App from './10-todolist.js'
 
 
 ReactDOM.render(
