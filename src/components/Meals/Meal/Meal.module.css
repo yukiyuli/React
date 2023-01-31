@@ -1,0 +1,54 @@
+.Meal {
+    /* set flexbox */
+    display: flex;
+    /* set minor axis alignment */
+    align-items: center;
+    /* set margin */
+    padding: 30rem 20rem;
+    border-bottom: 1px #f2f2f2 solid;
+}
+
+.ImgBox {
+    width: 180rem;
+}
+
+img {
+    width: 160rem;
+    height: 160rem;
+}
+
+.MealContent {
+    flex: auto;
+    padding-left: 5rem;
+}
+
+.Title {
+    font-weight: normal;
+    font-size: 34rem;
+    margin: 0;
+}
+
+.Desc {
+    color: #aaa;
+    font-size: 26rem;
+    margin: 0;
+    padding-right: 12rem;
+
+}
+
+.PriceAmount {
+    margin-top: 40rem;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 30rem;
+}
+
+.Price {
+    font-weight: bold;
+    font-size: 36rem;
+}
+
+.Price::before {
+    content: '$';
+    font-size: 24rem;
+}
