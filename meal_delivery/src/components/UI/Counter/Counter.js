@@ -33,12 +33,14 @@ const Counter = (props) => {
 
   // function of adding cart
   const addButtonHandler = () => {
-    ctx.addItem(props.meal);
+    // ctx.addItem(props.meal);
+    ctx.cartDispatch({type:'ADD', meal:props.meal});
   };
 
   // function of deleting food
   const subButtonHandler = () => {
-    ctx.removeItem(props.meal);
+    // ctx.removeItem(props.meal);
+    ctx.cartDispatch({type:'REMOVE', meal:props.meal});
   };
 
   return (
@@ -62,7 +64,8 @@ const Counter = (props) => {
 
       <button
         onClick={addButtonHandler}
-        className={classes.Add}><FontAwesomeIcon icon={faPlus} /></button>
+        className={classes.Add}><FontAwesomeIcon icon={faPlus} />
+      </button>
     </div>
   )
 }

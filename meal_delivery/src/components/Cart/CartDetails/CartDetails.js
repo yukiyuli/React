@@ -1,4 +1,4 @@
-import React, { useContext, useState, useSyncExternalStore } from 'react'
+import React, { useContext, useState} from 'react'
 import Backdrop from '../../UI/Backdrop/Backdrop'
 import classes from './CartDetail.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -26,7 +26,7 @@ const CartDetails = () => {
 
   const okHandler = () => {
     // empty cart
-    ctx.clearCart()
+    ctx.cartDispatch({type:'CLEAR'});
   }
 
   return (

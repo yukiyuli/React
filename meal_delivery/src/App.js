@@ -1,4 +1,4 @@
-import React, { useState, useSyncExternalStore } from 'react'
+import React, { useReducer, useState } from 'react'
 import Cart from './components/Cart/Cart';
 import FilterMeals from './components/FilterMeals/FilterMeals';
 import Meals from './components/Meals/Meals'
@@ -54,6 +54,43 @@ const MEALS_DATA = [
   }
 ];
 
+
+// define cartReducer
+const cartReducer=(state, action)=>{
+
+  // copy cart
+  const newCart={...state};
+
+  switch(action.type){
+    default:
+      return state;
+    case "ADD":
+      if (newCart.items.indexOf(action.meal) === -1) {
+          newCart.items.push(action.meal);
+          action.meal.amount = 1;
+      } else{
+          action.meal.amount += 1;
+      }
+      newCart.totalAmount += 1;
+      newCart.totalPrice += action.meal.price;
+      return newCart;
+    case 'REMOVE':
+        action.meal.amount -= 1;
+        if (action.meal.amount === 0) {
+            newCart.items.splice(newCart.items.indexOf(action.meal), 1);
+        }
+        newCart.totalAmount -= 1;
+        newCart.totalPrice -= action.meal.price;
+        return newCart;
+    case 'CLEAR':
+        newCart.items.forEach(item => delete item.amount);
+        newCart.items = [];
+        newCart.totalAmount = 0;
+        newCart.totalPrice = 0;
+        return newCart;
+  } 
+};
+
 const App = () => {
 
   // create state to save food list
@@ -66,10 +103,11 @@ const App = () => {
     3. total price
   */
 
-  const [cartData, setCartData] = useState({
-    items: [],
-    totalAmount: 0,
-    totalPrice: 0
+  const [cartData, cartDispatch] =useReducer(cartReducer, {
+      items: [],
+      totalAmount: 0,
+      totalPrice: 0
+
   });
 
   // create meals filter function
@@ -78,75 +116,10 @@ const App = () => {
     setMealsData(newMealsData);
   };
 
-  // add food to cart
-  const addItem = (meal) => {
-    // meal, the food needs to be add to cart
-    // shallow copy cart
-    const newCart = { ...cartData };
 
-    // determine if the cart already had the food
-    if (newCart.items.indexOf(meal) === -1) {
-
-      // add meal to cart
-      newCart.items.push(meal);
-
-      // change the amount
-      meal.amount = 1;
-
-    } else {
-      meal.amount += 1;
-    }
-
-    // add total amount
-    newCart.totalAmount += 1;
-
-    // add total price
-    newCart.totalPrice += meal.price;
-
-    // reset cart
-    setCartData(newCart)
-
-  };
-
-
-  // reduce the food amount
-  const removeItem = (meal) => {
-
-    // shallow copy cart
-    const newCart = { ...cartData };
-
-    // reduce the food amount
-    meal.amount -= 1;
-
-    // check if food amount is 0
-    if (meal.amount === 0) {
-      // remove the food from cart
-      newCart.items.splice(newCart.items.indexOf(meal), 1);
-    }
-
-    // change the total price and total amount
-    newCart.totalAmount -= 1;
-
-    newCart.totalPrice -= meal.price;
-
-    // reset cart
-    setCartData(newCart)
-  };
-
-  const clearCart = () => {
-
-    const newCart = {...cartData};
-    // 将购物车中商品的数量清0
-    newCart.items.forEach(item => delete item.amount);
-    newCart.items = [];
-    newCart.totalAmount = 0;
-    newCart.totalPrice = 0;
-
-    setCartData(newCart);
-  };
 
   return (
-    <CartContext.Provider value={{ ...cartData, addItem, removeItem, clearCart}}>
+    <CartContext.Provider value={{ ...cartData, cartDispatch}}>
       <div>
         <FilterMeals onFilter={filterHandler} />
         <Meals mealsData={mealsData} />

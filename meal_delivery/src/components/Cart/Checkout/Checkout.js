@@ -11,7 +11,7 @@ const checkoutRoot = document.getElementById('checkout-root')
 
 const Checkout = (props) => {
 
-  const ctx = useContext(CartContext)
+  const ctx = useContext(CartContext);
 
   return ReactDOM.createPortal(
     <div className={classes.Checkout}>
@@ -39,8 +39,8 @@ const Checkout = (props) => {
       <Bar totalPrice={ctx.totalPrice}/>
 
     </div>, checkoutRoot
-  )
+  );
 
-}
+};
 
-export default Checkout
+export default Checkout;
