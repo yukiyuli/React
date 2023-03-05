@@ -45,6 +45,33 @@ const StudentForm = (props) => {
 
     }, []);
 
+    const updateStudent = useCallback(async (id, newStu) => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const res = await fetch(`http://localhost:1337/api/students/${id}`, {
+                method: 'put',
+                body: JSON.stringify({ data: newStu }),
+                headers: { "Content-type": "application/json" }
+            });
+
+            if (!res.ok) {
+                throw new Error('Edit failed')
+            }
+
+            // add successfully then refresh
+            ctx.fetchData();
+
+        } catch (e) {
+            setError(e);
+        } finally {
+            setLoading(false);
+        }
+
+    }, []);
+
+
     const nameChangeHandler = (e) => {
         setInputData(prevState => ({ ...prevState, name: e.target.value }));
     };
@@ -63,6 +90,10 @@ const StudentForm = (props) => {
 
     const sumbmitHandler = () => {
         addStudent(inputData);
+    }
+
+    const updateHandler = () => {
+        updateStudent(props.stu.id, inputData)
     }
 
     return (
@@ -95,7 +126,7 @@ const StudentForm = (props) => {
                     {props.stu && <>
 
                         <button onClick={() => props.onCancel()}>Cancel</button>
-                        <button>Confirm</button>
+                        <button onClick={updateHandler}>Confirm</button>
 
                     </>}
                     {!props.stu &&
