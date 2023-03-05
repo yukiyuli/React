@@ -53,7 +53,7 @@ const Student = (props) => {
         </tr>
 
         {loading && <tr><td colSpan={5}>Deleting...</td></tr>}
-        {error && <tr><td colSpan={5}>Deletie failed...</td></tr>}
+        {error && <tr><td colSpan={5}>Delete failed...</td></tr>}
         </>
     );
 };
