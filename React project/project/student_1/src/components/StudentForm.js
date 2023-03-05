@@ -3,16 +3,17 @@ import StuContext from '../store/StuContext';
 import './StudentForm.css';
 
 
-const StudentForm = () => {
+const StudentForm = (props) => {
     const [inputData, setInputData] = useState({
-        name: '',
-        age: '',
-        gender: '',
-        address: ''
+        name: props.stu ? props.stu.attributes.name : '',
+        age: props.stu ? props.stu.attributes.age : '',
+        gender: props.stu ? props.stu.attributes.gender : '',
+        address: props.stu ? props.stu.attributes.address : ''
     });
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
     const ctx = useContext(StuContext);
 
 
@@ -88,7 +89,18 @@ const StudentForm = () => {
                     onChange={addressChangeHandler}
                     value={inputData.address}
                     type="text" /></td>
-                <td><button onClick={sumbmitHandler}>Add</button></td>
+                <td>
+
+                    {/* 根据表格里有没有数据，显示不同的按钮 */}
+                    {props.stu && <>
+
+                        <button onClick={() => props.onCancel()}>Cancel</button>
+                        <button>Confirm</button>
+
+                    </>}
+                    {!props.stu &&
+                        <button onClick={sumbmitHandler}>Add</button>}
+                </td>
 
             </tr>
             {loading && <tr><td colSpan={5}>Adding...</td></tr>}

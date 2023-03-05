@@ -1,24 +1,26 @@
 import React, { useCallback, useContext, useState } from 'react';
 import StuContext from "../store/StuContext";
+import StudentForm from './StudentForm';
 
 const Student = (props) => {
     // {stu:{name, age, gender, address}} = props
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isEdit, setIsEdit] = useState(false);
 
-    const ctx=useContext(StuContext);
+    const ctx = useContext(StuContext);
 
     const delStu = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
-            const res = await fetch(`http://localhost:1337/api/students/${props.stu.id}`,{
-                method:'delete'
+            const res = await fetch(`http://localhost:1337/api/students/${props.stu.id}`, {
+                method: 'delete'
             });
 
             // 判断是否成功
-            if(!res.ok){
+            if (!res.ok) {
                 throw new Error('Delete failed')
             }
 
@@ -40,20 +42,29 @@ const Student = (props) => {
         delStu();
     };
 
+    const cancelEdit = () => {
+        setIsEdit(false);
+    }
+
     return (
         <>
-        <tr>
-            <td>{props.stu.attributes.name}</td>
-            <td>{props.stu.attributes.gender}</td>
-            <td>{props.stu.attributes.age}</td>
-            <td>{props.stu.attributes.address}</td>
-            <td>
-                <button onClick={deleteHandler}>Delete</button>
-            </td>
-        </tr>
+            {!isEdit &&
+                <tr>
+                    <td>{props.stu.attributes.name}</td>
+                    <td>{props.stu.attributes.gender}</td>
+                    <td>{props.stu.attributes.age}</td>
+                    <td>{props.stu.attributes.address}</td>
+                    <td>
+                        <button onClick={deleteHandler}>Delete</button>
+                        <button onClick={() => setIsEdit(true)}>Edit</button>
+                    </td>
+                </tr>
+            }
 
-        {loading && <tr><td colSpan={5}>Deleting...</td></tr>}
-        {error && <tr><td colSpan={5}>Delete failed...</td></tr>}
+            {isEdit && <StudentForm stu={props.stu} onCancel={cancelEdit} />}
+
+            {loading && <tr><td colSpan={5}>Deleting...</td></tr>}
+            {error && <tr><td colSpan={5}>Delete failed...</td></tr>}
         </>
     );
 };
