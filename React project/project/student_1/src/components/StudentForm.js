@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useContext } from 'react';
+import useFetch from '../hooks/usefetch';
 import StuContext from '../store/StuContext';
 import './StudentForm.css';
 
@@ -11,39 +12,15 @@ const StudentForm = (props) => {
         address: props.stu ? props.stu.attributes.address : ''
     });
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
 
     const ctx = useContext(StuContext);
 
+    const {loading,error, fetchData: addStudent}=useFetch({
+        url: "students",
+        method:'post',
+        // body: inputData, body传的位置变了，在调用的时候传数据
 
-    // add student function
-    const addStudent = useCallback(async (newStu) => {
-
-        try {
-            setLoading(true);
-            setError(null);
-
-            const res = await fetch('http://localhost:1337/api/students', {
-                method: 'post',
-                body: JSON.stringify({ data: newStu }),
-                headers: { "Content-type": "application/json" }
-            });
-
-            if (!res.ok) {
-                throw new Error('Add failed')
-            }
-
-            // add successfully then refresh
-            ctx.fetchData();
-
-        } catch (e) {
-            setError(e);
-        } finally {
-            setLoading(false);
-        }
-
-    }, []);
+    }, ctx.fetchData)
 
     const updateStudent = useCallback(async (id, newStu) => {
         try {

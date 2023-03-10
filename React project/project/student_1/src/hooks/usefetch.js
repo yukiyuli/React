@@ -6,9 +6,11 @@ import { useCallback, useState } from 'react';
 // headers: {
 //     "content-type"
 // }
-// body: request body
+// body: request body, body不能一开始的时候传，因为在执行useFetch时，还没有数据传过去，所以要在fetchData的时候调用body才能确保拿到的是最新的数据
 
-export default function useFetch(reqObj) {
+// cb: Callback function, executed after the request is sent successfully
+
+export default function useFetch(reqObj, cb) {
 
     const [data, setData] = useState([]);
 
@@ -18,7 +20,7 @@ export default function useFetch(reqObj) {
     // 创建一个state来记录错误信息
     const [error, setError] = useState(null);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (body) => {
         try {
             setLoading(true);
             setError(null);
@@ -29,12 +31,13 @@ export default function useFetch(reqObj) {
                 },
 
                 // get请求没有请求体，所以这里要做一个判断
-                body: (!reqObj.method || reqObj.method.toLowerCase() === 'get') ? null : JSON.stringify({ data: reqObj.body })
+                body: body ? JSON.stringify({ data: body }) : null,
             });
             //判断请求是否加载成功
             if (res.ok) {
                 const data = await res.json();
                 setData(data.data);
+                cb && cb();
             } else {
                 throw new Error('Loading failed!');
             }
