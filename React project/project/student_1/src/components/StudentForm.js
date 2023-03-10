@@ -15,38 +15,14 @@ const StudentForm = (props) => {
 
     const ctx = useContext(StuContext);
 
-    const {loading,error, fetchData: addStudent}=useFetch({
-        url: "students",
-        method:'post',
+    // 把add, udpate合在一起
+    const { loading, error, fetchData: updateStudent } = useFetch({
+        // 如果prop.stu有数据，说明是休息，如果没有数据是添加
+        url: props.stu ? `students/${props.stu.id}` : 'students',
+        method: props.stu ? 'put' : 'post',
         // body: inputData, body传的位置变了，在调用的时候传数据
 
-    }, ctx.fetchData)
-
-    const updateStudent = useCallback(async (id, newStu) => {
-        try {
-            setLoading(true);
-            setError(null);
-
-            const res = await fetch(`http://localhost:1337/api/students/${id}`, {
-                method: 'put',
-                body: JSON.stringify({ data: newStu }),
-                headers: { "Content-type": "application/json" }
-            });
-
-            if (!res.ok) {
-                throw new Error('Edit failed')
-            }
-
-            // add successfully then refresh
-            ctx.fetchData();
-
-        } catch (e) {
-            setError(e);
-        } finally {
-            setLoading(false);
-        }
-
-    }, []);
+    }, ctx.fetchData);
 
 
     const nameChangeHandler = (e) => {
@@ -66,11 +42,11 @@ const StudentForm = (props) => {
     };
 
     const sumbmitHandler = () => {
-        addStudent(inputData);
+        updateStudent(inputData);
     }
 
     const updateHandler = () => {
-        updateStudent(props.stu.id, inputData)
+        updateStudent(inputData)
     }
 
     return (
