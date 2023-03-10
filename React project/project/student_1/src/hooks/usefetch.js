@@ -1,6 +1,14 @@
 import { useCallback, useState } from 'react';
 
-export default function useFetch() {
+// reqObj: save request parameter
+// url: request address
+// method: request method
+// headers: {
+//     "content-type"
+// }
+// body: request body
+
+export default function useFetch(reqObj) {
 
     const [data, setData] = useState([]);
 
@@ -14,7 +22,15 @@ export default function useFetch() {
         try {
             setLoading(true);
             setError(null);
-            const res = await fetch('http://localhost:1337/api/students');
+            const res = await fetch('http://localhost:1337/api/' + reqObj.url, {
+                method: reqObj.method || 'get',
+                headers: {
+                    "Content-type": reqObj.type || "application/json"
+                },
+
+                // get请求没有请求体，所以这里要做一个判断
+                body: (!reqObj.method || reqObj.method.toLowerCase() === 'get') ? null : JSON.stringify({ data: reqObj.body })
+            });
             //判断请求是否加载成功
             if (res.ok) {
                 const data = await res.json();

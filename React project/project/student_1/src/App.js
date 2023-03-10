@@ -7,7 +7,9 @@ import useFetch from './hooks/usefetch';
 
 const App = () => {
 
-    const { data: stuData, loading, error, fetchData } = useFetch();
+    const { data: stuData, loading, error, fetchData } = useFetch({
+        url: 'students'
+    });
 
 
     // 组件重新加载
